@@ -1,19 +1,18 @@
 ### EXAMPLE JOB SUBMISISON ###
 # sbatch -A SternbergGroup  --gres gpu --mem=64000 -t 15:00:00 --ntasks 10 --nodes 1 --job-name "bcbg" --wrap "python bcbg.py"
 
-import sys
+
 ### FILENAME CHANGE BEFORE RUNNING ###
 model_name= 'blah'
 adata_file='../blah.h5ad'
 
 ######################################
-
+import sys
 import warnings; warnings.simplefilter('ignore')
 import os
 import numpy as np
 import pandas as pd
 import json
-
 import matplotlib.pyplot as plt
 from scvi.dataset import GeneExpressionDataset
 from scvi.models import VAE
@@ -21,7 +20,7 @@ from scvi.inference import UnsupervisedTrainer
 import torch
 import anndata
 import scvi 
-
+import datetime
 import plotly.express as px
 import plotly.graph_objects as go
 from anndata import AnnData
@@ -47,11 +46,11 @@ def isnotebook():
     except NameError:
         return False      # Probably standard Python interpreter
     
-def derplot(adata=None, filaneme='derplot',embedding='tsne',feature='sample_type_tech',size=(12, 12), save=False):
+def derplot(adata=None, filename='derplot',embedding='tsne',feature='sample_type_tech',size=(12, 12), save=False):
     start = datetime.datetime.now()
     
     p.options.figure_size = size
-    savename=filaneme +'.' + embedding + '.' + feature + '.png'
+    savename=filename +'.' + embedding + '.' + feature + '.png'
     print(start.strftime("%H:%M:%S"), 'Starting ... \t',savename, )
     p.theme_set(p.theme_classic())
     pt = \
@@ -59,7 +58,7 @@ def derplot(adata=None, filaneme='derplot',embedding='tsne',feature='sample_type
         + p.geom_point(size=0.75, alpha = 1, stroke = 0 ) \
         + p.guides(color = p.guide_legend(override_aes={'size': 15})) 
     
-#     if isnotebook(): pt.draw()
+    if isnotebook(): pt.draw()
     if save: pt.save(savename, format='png', dpi=200)
         
     end = datetime.datetime.now()
@@ -69,13 +68,13 @@ def derplot(adata=None, filaneme='derplot',embedding='tsne',feature='sample_type
     return(pt)
 
 
-def wraplot(adata=None, filaneme='wraplot',embedding='tsne',feature='sample_type_tech',size=(12, 12), color=None, save=False):
+def wraplot(adata=None, filename='wraplot',embedding='tsne',feature='sample_type_tech',size=(12, 12), color=None, save=False):
     start = datetime.datetime.now()
     p.options.figure_size = size
-    savename = filaneme +'.' + embedding + '.' + feature + '.' + str(color) + '.png'
+    savename = filename +'.' + embedding + '.' + feature + '.' + str(color) + '.png'
     if color==None: 
         color=feature
-        savename = filaneme +'.' + embedding + '.' + feature + '.png'
+        savename = filename +'.' + embedding + '.' + feature + '.png'
     print(start.strftime("%H:%M:%S"), 'Starting ... \t',savename, )
     
     pt = (
@@ -87,7 +86,7 @@ def wraplot(adata=None, filaneme='wraplot',embedding='tsne',feature='sample_type
         + p.guides(color = p.guide_legend(override_aes={'size': 10}))
     )
     
-#     if isnotebook(): pt.draw()
+    if isnotebook(): pt.draw()
     if save: pt.save(savename, format='png', dpi=200)
     
     end = datetime.datetime.now()
