@@ -46,7 +46,8 @@ def isnotebook():
     except NameError:
         return False      # Probably standard Python interpreter
     
-def derplot(adata=None, filename='derplot',embedding='tsne',feature='sample_type_tech',size=(12, 12), save=False):
+def derplot(adata=None, filename='derplot',embedding='tsne',feature='sample_type_tech',
+            size=(12, 12), save=False, draw=False, psize=3):
     start = datetime.datetime.now()
     
     p.options.figure_size = size
@@ -55,10 +56,10 @@ def derplot(adata=None, filename='derplot',embedding='tsne',feature='sample_type
     p.theme_set(p.theme_classic())
     pt = \
     p.ggplot(p.aes(embedding +'0', embedding + '1', color=feature), adata.obs) \
-        + p.geom_point(size=0.75, alpha = 1, stroke = 0 ) \
+        + p.geom_point(size=psize, alpha = 1, stroke = 0 ) \
         + p.guides(color = p.guide_legend(override_aes={'size': 15})) 
     
-    if isnotebook(): pt.draw()
+    if isnotebook() and draw: pt.draw()
     if save: pt.save(savename, format='png', dpi=200)
         
     end = datetime.datetime.now()
@@ -68,7 +69,8 @@ def derplot(adata=None, filename='derplot',embedding='tsne',feature='sample_type
     return(pt)
 
 
-def wraplot(adata=None, filename='wraplot',embedding='tsne',feature='sample_type_tech',size=(12, 12), color=None, save=False):
+def wraplot(adata=None, filename='wraplot',embedding='tsne',feature='sample_type_tech',
+            size=(12, 12), color=None, save=False, draw=False, psize=3):
     start = datetime.datetime.now()
     p.options.figure_size = size
     savename = filename +'.' + embedding + '.' + feature + '.' + str(color) + '.png'
@@ -80,13 +82,13 @@ def wraplot(adata=None, filename='wraplot',embedding='tsne',feature='sample_type
     pt = (
         p.ggplot(p.aes(x= embedding+'0', y=embedding+'1', color=color), adata.obs) 
         + p.geom_point(color='lightgrey', shape = '.', data=adata.obs.drop(feature, axis = 1)) 
-        + p.geom_point(shape='.', size=1, alpha = 1, stroke = 0 ) 
+        + p.geom_point(shape='.', size=psize, alpha = 1, stroke = 0 ) 
         + p.theme_minimal()
         + p.facet_wrap('~' + feature )
         + p.guides(color = p.guide_legend(override_aes={'size': 10}))
     )
     
-    if isnotebook(): pt.draw()
+    if isnotebook() and draw: pt.draw()
     if save: pt.save(savename, format='png', dpi=200)
     
     end = datetime.datetime.now()
